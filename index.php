@@ -55,7 +55,7 @@
     }
 
   }catch(PDOException $e){
-    echo $e->getMassage().'<br>';
+    echo $e->getMessage().'<br>';
     exit;
   }
 ?>   
