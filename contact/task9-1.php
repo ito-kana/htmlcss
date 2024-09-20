@@ -1,3 +1,62 @@
+<?php
+// データベース接続情報
+$servername = "localhost";
+$username = "root";
+$password = "root";
+$dbname = "consumer";
+
+// データベース接続の作成
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// 接続確認
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// テーブル作成のSQL
+// $sql = "CREATE TABLE IF NOT EXISTS form (
+//   id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+//   name VARCHAR(50) NOT NULL,
+//   furigana VARCHAR(50) NOT NULL,
+//   email VARCHAR(50) NOT NULL,
+//   phone VARCHAR(20),
+//   inquiry_type VARCHAR(50),
+//   message TEXT,
+//   acceptance TINYINT(1),
+//   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+// )";
+
+// テーブル作成の実行
+// if ($conn->query($sql) === TRUE) {
+//   echo "Table form created successfully";
+// } else {
+//   echo "Error creating table: " . $conn->error;
+// }
+
+// フォームが送信された場合の処理
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  $name = $conn->real_escape_string(htmlspecialchars($_POST['name']));
+  $furigana = $conn->real_escape_string(htmlspecialchars($_POST['furigana']));
+  $email = $conn->real_escape_string(htmlspecialchars($_POST['email']));
+  $phone = $conn->real_escape_string(htmlspecialchars($_POST['phone']));
+  $inquiry_type = $conn->real_escape_string(htmlspecialchars($_POST['inquiry_type']));
+  $message = $conn->real_escape_string(htmlspecialchars($_POST['message']));
+  $acceptance = isset($_POST['acceptance-714']) ? 1 : 0;
+
+  // データベースにデータを挿入
+  $sql = "INSERT INTO form (name, furigana, email, phone, inquiry_type, message, acceptance, created_at)
+          VALUES ('$name', '$furigana', '$email', '$phone', '$inquiry_type', '$message', '$acceptance', NOW())";
+
+  if ($conn->query($sql) === TRUE) {
+    echo "New record created successfully";
+  } else {
+    echo "Error: " . $sql . "<br>" . $conn->error;
+  }
+}
+
+$conn->close();
+?>
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>

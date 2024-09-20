@@ -1,8 +1,9 @@
 <?php
+exit;
 define('DSN','mysql:host=localhost;dbname=company;charset=utf8mb4');
 define('USER','root');
 define('PASS','root');
-
+exit;
 
 class Database
 {

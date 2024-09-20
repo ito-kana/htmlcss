@@ -1,11 +1,3 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>確認ページ</title>
-  <link rel="stylesheet" href="reset.css">
-</head>
 <?php
 $errorMessages = [];
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -19,75 +11,40 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $errorMessages[] = "メールアドレスを入力してください。";
     } elseif (!filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)) {
         $errorMessages[] = "正しいメールアドレスを入力してください。";
-    }
+      }
     if (empty($_POST["phone"])) {
         $errorMessages[] = "電話番号を入力してください。";
     } elseif (!preg_match("/^\d{10,11}$/", $_POST["phone"])) {
         $errorMessages[] = "電話番号は10桁または11桁で入力してください。";
-    }
+      }
     if (empty($_POST["inquiry_type"])) {
         $errorMessages[] = "お問い合わせ項目を選択してください。";
-    }
+      }
     if (empty($_POST["message"])) {
         $errorMessages[] = "お問い合わせ内容を入力してください。";
-    }
+      }
     if (empty($_POST["acceptance-714"])) {
         $errorMessages[] = "個人情報保護方針に同意してください。";
-    }
-
-    // エラーメッセージがない場合はフォームを送信
-    if (empty($errorMessages)) {
-      // フォームの処理をここに追加
-      header("Location: task8-2.php");
-      exit;
+      }
   }
-}
-// データベース接続情報
-$servername = "localhost";
-$username = "root";
-$password = "root";
-$dbname = "consumer";
-
-// データベース接続の作成
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// 接続確認
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-// フォームが送信された場合の処理
+  // フォームが送信された場合の処理
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = htmlspecialchars($_POST['name']);
-    $furigana = htmlspecialchars($_POST['furigana']);
-    $email = htmlspecialchars($_POST['email']);
-    $phone = htmlspecialchars($_POST['phone']);
-    $inquiry_type = htmlspecialchars($_POST['inquiry_type']);
-    $message = htmlspecialchars($_POST['message']);
-    $acceptance = isset($_POST['acceptance-714']) ? 1 : 0;
-
-    // データベースにデータを挿入
-    $sql = "INSERT INTO your_table_name (name, furigana, email, phone, inquiry_type, message, acceptance, created_at)
-            VALUES ('$name', '$furigana', '$email', '$phone', '$inquiry_type', '$message', '$acceptance', NOW())";
-
-    if ($conn->query($sql) === TRUE) {
-        // データ挿入成功時の処理
-        header("Location: task9-1.php");
-        exit();
-    } else {
-        echo "Error: " . $sql . "<br>" . $conn->error;
-    }
+  $name = htmlspecialchars($_POST['name']);
+  $furigana = htmlspecialchars($_POST['furigana']);
+  $email = htmlspecialchars($_POST['email']);
+  $phone = htmlspecialchars($_POST['phone']);
+  $inquiry_type = htmlspecialchars($_POST['inquiry_type']);
+  $message = htmlspecialchars($_POST['message']);
+  $acceptance = isset($_POST['acceptance-714']) ? 1 : 0;
 }
-
-$conn->close();
 ?>
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>contact</title>
-  <link rel="stylesheet" href="reset.css">
+  <title>確認ページ</title>
   <link rel="stylesheet" href="stylesheet.css">
 </head>
 <body>
@@ -116,33 +73,34 @@ $conn->close();
         <div class="form_top">
           <h1>お問い合わせ</h1>
           <p>お問い合わせや業務内容に関するご質問は、電話またはこちらのお問い合わせフォームより承っております。<br>後ほど担当者よりご連絡させていただきます</p>
-          <br><?php
-    if (!empty($errorMessages)) {
-        echo '<div style="color: red;">';
-        foreach ($errorMessages as $message) {
-            echo '<p>' . htmlspecialchars($message) . '</p>';
-        }
-        echo '</div>';
-    }
-    ?>
+          <br>
+          <?php
+            if (!empty($errorMessages)) {
+              echo '<div style="color: red;">';
+              foreach ($errorMessages as $message) {
+              echo '<p>' . htmlspecialchars($message) . '</p>';
+              }
+              echo '</div>';
+             }
+          ?>
         </div>
-    
-    <form action="" method="post">
+  
+    <form action="<?php if(empty($errorMessages)){echo 'task9-1.php';}?>" method="post">
         <div class="Form-Item">
             <p class="Form-Item-Label">お名前<span class="Form-Item-Label-Required">必須</span></p>
-            <input type="text" class="Form-Item-Input" name="name" placeholder="山田太郎" value="<?php echo htmlspecialchars($_POST['name'] ?? ''); ?>">
+            <input type="text" class="Form-Item-Input" name="name" placeholder="山田太郎" value="<?= $name; ?>">
         </div>
         <div class="Form-Item">
             <p class="Form-Item-Label">フリガナ<span class="Form-Item-Label-Required">必須</span></p>
-            <input type="text" class="Form-Item-Input" name="furigana" placeholder="ヤマダタロウ" value="<?php echo htmlspecialchars($_POST['furigana'] ?? ''); ?>">
+            <input type="text" class="Form-Item-Input" name="furigana" placeholder="ヤマダタロウ" value="<?=$furigana; ?>">
         </div>
         <div class="Form-Item">
             <p class="Form-Item-Label">メールアドレス<span class="Form-Item-Label-Required">必須</span></p>
-            <input type="text" class="Form-Item-Input" name="email" placeholder="info@fast-creademy.jp" value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>">
+            <input type="text" class="Form-Item-Input" name="email" placeholder="info@fast-creademy.jp" value="<?=$email; ?>">
         </div>
         <div class="Form-Item">
             <p class="Form-Item-Label">電話番号<span class="Form-Item-Label-Required">必須</span></p>
-            <input type="text" class="Form-Item-Input" name="phone" placeholder="000-0000-0000" value="<?php echo htmlspecialchars($_POST['phone'] ?? ''); ?>">
+            <input type="text" class="Form-Item-Input" name="phone" placeholder="000-0000-0000" value="<?= $phone; ?>">
         </div>
         <div class="Form-Item">
             <p class="Form-Item-Label">お問い合わせ項目<span class="Form-Item-Label-Required">必須</span></p>
